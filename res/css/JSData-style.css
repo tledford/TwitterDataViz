@@ -1,0 +1,29 @@
+.data-scattergraph {
+	border-radius: 10px;
+	border: 5px #444 solid;
+	background: #EFEFEF;
+}
+
+canvas {
+	cursor: default;
+}
+
+#term1pie {
+	color:#54A0D3;
+}
+
+#term2pie {
+	color:#D3F000;
+}
+
+.term1 {
+	background-color:#54A0D3;
+}
+
+.term2 {
+	background-color:#D3F000;
+}
+
+td {
+	padding:5px;
+}

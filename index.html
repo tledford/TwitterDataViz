@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>205 Data Viz</title>
+
+	<link rel="stylesheet" href="/res/css/JSData-style.css" type="text/css" />
+
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	<script src="/res/js/JSData-core.js"></script>
+
+	<script>
+		var socket = io();
+		socket.on('term1', function(msg){
+			$('#term1total').html(msg);
+			$("#term1pie").attr("data-val", msg);
+		});
+		socket.on('term2', function(msg){
+			$('#term2total').html(msg);
+			$("#term2pie").attr("data-val", msg);
+		});
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			$('#legend').hide();
+			$('#stopBtn').click(function(e) {
+		        socket.emit("stopBtn");
+		    });
+
+
+			$("#pizzaPie").pie();
+		});
+
+		function beginGraphing() {
+		//alert("test");
+		$('#legend').show();
+		$('#term1name').html("#" + $("#hashtag1").val());
+		$('#term2name').html("#" + $("#hashtag2").val());
+		$('#term1total').html("0");
+		$('#term2total').html("0");
+		$("#term1pie").attr("data-val", "0");
+		$("#term2pie").attr("data-val", "0");
+		$.ajax({
+			url: "/startGraphing",
+			method: "GET",
+			async: true,
+			cache: false,
+			data: {
+				hashtag1: $("#hashtag1").val(),
+				hashtag2: $("#hashtag2").val()
+			},
+			success: function(data) {
+				console.log(data);
+			}
+		});
+	}
+
+</script>
+
+</head>
+<body>
+	<h3>Enter two hashtags</h3>
+	<div id="hashtagForm">
+		#<input type="text" id="hashtag1" placeholder="First Term" />
+		&nbsp;&nbsp;VS.&nbsp;&nbsp;
+		#<input type="text" id="hashtag2" placeholder="Second Term" /> 
+		<button id="submitBtn" onclick="beginGraphing()">Visualize</button>
+		<button id="stopBtn">Stop</button>
+	</div>
+	<table id="legend">
+		<tr id="term1row" class="term1">
+			<td id="term1name"></td>
+			<td id="term1total"></td>
+		</tr>
+		<tr id="term2row" class="term2">
+			<td id="term2name"></td>
+			<td id="term2total"></td>
+		</tr>
+	</table>
+	<br />
+	<div class="data-pie" id="pizzaPie" name="Hashtags" 
+	data-pie-show-text="true"
+	style="width:600px; height:600px;">
+	<span id="term1pie" class="data-point" name="term1" data-val="0"></span>
+	<span id="term2pie" class="data-point" name="term2" data-val="0"></span>
+
+</div>
+
+</body>
+</html>
