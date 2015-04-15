@@ -27,16 +27,16 @@ var twitterStreamClient = new Twitter.StreamClient(
     'glP2WxeeJ72V5bvYPzpzDo2BaK7TWNNzp6LNkHYHoL3NFqNtdc',
     '2530404056-HoK2YKkE9T3Ju6Y5szaesiVj40bBF7Ea7usaL4X',
     'A9U31DHquMo3OxngBJMtGLoKKAaqxL0NsGfhXYgQWGbz7'
-);
+    );
 
 //serve up any requested resource file in /205/res
 app.get("/res/*", function (req, res) {
     //console.log(__dirname + "  " + req.url);
-	try{
-		res.end(fs.readFileSync(__dirname + req.url));
-	} catch(e) {
-		console.log(e);
-	}
+    try{
+      res.end(fs.readFileSync(__dirname + req.url));
+  } catch(e) {
+      console.log(e);
+  }
 });
 
 //serve up index.html if /205 is requested
@@ -74,7 +74,7 @@ twitterStreamClient.on('error', function(error) {
     console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
 });
 twitterStreamClient.on('tweet', function(tweet) {
-    //console.log(tweet.entities.hashtags);
+    //console.log(tweet);
     term1 = term1.toLowerCase();
     term2 = term2.toLowerCase();
     //console.log(term1 + "  " + term2);
@@ -93,6 +93,9 @@ twitterStreamClient.on('tweet', function(tweet) {
     		io.emit('term2', counter2);
     	}
     }
+
+    getLocation(tweet);
+
     //console.log("Term1: " + counter1);
     //console.log("Term2: " + counter2);
 });
@@ -104,8 +107,52 @@ io.on('connection', function(socket){
         twitterStreamClient.stop();
         counter1 = 0;
         counter2 = 0;
+        io.emit('stopBtnPressed');
     });
 });
+
+function getLocation(tweet) {
+    // Does the JSON result have coordinates
+    if (tweet.coordinates){
+        if (tweet.coordinates !== null){
+            console.log(tweet.entities.hashtags);
+            //If so then build up some nice json and send out to web sockets
+            var outputPoint = {"lat": tweet.coordinates.coordinates[0],"lng": tweet.coordinates.coordinates[1]};
+            io.emit('tweet-location', outputPoint);
+        }
+    }
+    else if(tweet.place){
+        if(tweet.place.bounding_box.type === 'Polygon'){
+        // Calculate the center of the bounding box for the tweet
+            var coord, _i, _len;
+            var centerLat = 0;
+            var centerLng = 0;
+            coords = tweet.place.bounding_box.coordinates;
+            _len = coords[0].length;
+            console.log("Coords: " + coords.length);
+            console.log("Coords[0] (coord): " + coords[0].length);
+            console.log("Coords[0] (coord): " + coords[0]);
+            console.log("Coords[0][0] (coord[0]): " + coords[0][0][0]);
+            console.log("Coords[0][1] (coord[1]): " + coords[0][0][1]);
+            console.log("Coords[0][0] (coord[0]): " + coords[0][2]);
+            console.log("Coords[0][1] (coord[1]): " + coords[0][3]);
+
+            for (_i = 0; _i < _len; _i++) {
+                coord = coords[0][_i];
+                centerLat += coord[0];
+                centerLng += coord[1];
+            }
+            centerLat = centerLat / _len;
+            centerLng = centerLng / _len;
+
+            // Build json object and broadcast it
+            var outputPoint = {"lat": centerLat,"lng": centerLng};
+            console.log(outputPoint);
+            io.emit('tweet-location', outputPoint);
+        }
+    }
+    
+}
 
 // var client = new Twitter({
 // 	consumer_key: 'Dx7SBf5aQwwhxOlTAoIdUmWuw',

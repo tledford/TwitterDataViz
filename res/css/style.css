@@ -1,0 +1,36 @@
+#leftContainer {
+	height: 100%;
+	width: 50%;
+	float: left;
+}
+
+#map_canvas{
+	height:100%;
+	width: 50%;
+	float: left;
+}
+
+#leftContent {
+	padding-left: 15px;
+}
+
+#term1pie {
+	color:#54A0D3;
+}
+
+#term2pie {
+	color:#D3F000;
+}
+
+.term1 {
+	background-color:#54A0D3;
+}
+
+.term2 {
+	background-color:#D3F000;
+}
+
+#pizzaPie {
+	width:400px;
+	height:400px;
+}
