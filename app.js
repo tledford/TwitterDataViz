@@ -44,11 +44,6 @@ app.get("/205", function (req, res) {
 	res.end(fs.readFileSync(__dirname + "/index.html"));
 });
 
-//serve up graphs.html if /205/graphs.html is requested
-app.get("/205/test.html", function (req, res) {
-	res.end(fs.readFileSync(__dirname + "/test.html"));
-});
-
 //handle the ajax request from the site.
 app.get("/startGraphing", function (req, res) {
 	term1 = req.query.hashtag1;
@@ -129,13 +124,13 @@ function getLocation(tweet) {
             var centerLng = 0;
             coords = tweet.place.bounding_box.coordinates;
             _len = coords[0].length;
-            console.log("Coords: " + coords.length);
-            console.log("Coords[0] (coord): " + coords[0].length);
-            console.log("Coords[0] (coord): " + coords[0]);
-            console.log("Coords[0][0] (coord[0]): " + coords[0][0][0]);
-            console.log("Coords[0][1] (coord[1]): " + coords[0][0][1]);
-            console.log("Coords[0][0] (coord[0]): " + coords[0][2]);
-            console.log("Coords[0][1] (coord[1]): " + coords[0][3]);
+            // console.log("Coords: " + coords.length);
+            // console.log("Coords[0] (coord): " + coords[0].length);
+            // console.log("Coords[0] (coord): " + coords[0]);
+            // console.log("Coords[0][0] (coord[0]): " + coords[0][0][0]);
+            // console.log("Coords[0][1] (coord[1]): " + coords[0][0][1]);
+            // console.log("Coords[0][0] (coord[0]): " + coords[0][2]);
+            // console.log("Coords[0][1] (coord[1]): " + coords[0][3]);
 
             for (_i = 0; _i < _len; _i++) {
                 coord = coords[0][_i];

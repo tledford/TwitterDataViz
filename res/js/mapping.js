@@ -1,7 +1,8 @@
 //Globals
 var liveTweets;
-var map;
 var socket = io();
+var map;
+
 
 $(document).ready(function() {
 	$('#legend').hide();
@@ -85,10 +86,6 @@ function initialize() {
 	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
 	//Setup heat map and link to Twitter array we will append data to
-	wipeMap();
-}
-
-function wipeMap() {
 	var heatmap;
 	liveTweets = new google.maps.MVCArray();
 	heatmap = new google.maps.visualization.HeatmapLayer({
@@ -96,4 +93,8 @@ function wipeMap() {
 		radius: 25
 	});
 	heatmap.setMap(map);
+}
+
+function wipeMap() {
+	liveTweets.clear();
 }
