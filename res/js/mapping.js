@@ -2,6 +2,8 @@
 var liveTweets;
 var socket = io();
 var map;
+var term1Heatmap;
+var term2Heatmap;
 
 
 $(document).ready(function() {
@@ -25,10 +27,27 @@ socket.on('term2', function(msg){
 
 // This listens on the "twitter-steam" channel and data is 
 // received everytime a new tweet is receieved.
-socket.on('tweet-location', function (mapPoint) {
+socket.on('term1-location', function (mapPoint) {
 	//Add tweet to the heat map array.
 	var tweetLocation = new google.maps.LatLng(mapPoint.lng,mapPoint.lat);
-	liveTweets.push(tweetLocation);
+	term1LiveTweets.push(tweetLocation);
+
+	//Flash a dot onto the map quickly
+	var image = "/res/css/small-dot-icon.png";
+	var marker = new google.maps.Marker({
+		position: tweetLocation,
+		map: map,
+		icon: image
+	});
+	setTimeout(function(){
+		marker.setMap(null);
+	},600);
+});
+
+socket.on('term2-location', function (mapPoint) {
+	//Add tweet to the heat map array.
+	var tweetLocation = new google.maps.LatLng(mapPoint.lng,mapPoint.lat);
+	term2LiveTweets.push(tweetLocation);
 
 	//Flash a dot onto the map quickly
 	var image = "/res/css/small-dot-icon.png";
@@ -86,15 +105,46 @@ function initialize() {
 	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
 	//Setup heat map and link to Twitter array we will append data to
-	var heatmap;
-	liveTweets = new google.maps.MVCArray();
-	heatmap = new google.maps.visualization.HeatmapLayer({
-		data: liveTweets,
+	
+	term1LiveTweets = new google.maps.MVCArray();
+	term1Heatmap = new google.maps.visualization.HeatmapLayer({
+		data: term1LiveTweets,
 		radius: 25
 	});
-	heatmap.setMap(map);
+	term1Heatmap.setMap(map);
+	setTerm1Gradient();
+
+	term2LiveTweets = new google.maps.MVCArray();
+	term2Heatmap = new google.maps.visualization.HeatmapLayer({
+		data: term2LiveTweets,
+		radius: 25
+	});
+	term2Heatmap.setMap(map);
+	setTerm2Gradient();
+}
+function setTerm1Gradient() {
+    gradient = [
+        'rgba(0, 0, 0, 0)',
+        'rgba(101, 192, 252, 1)',
+        'rgba(84, 160, 211, 1)',
+        'rgba(74, 141, 186, 1)',
+        'rgba(62, 119, 158, 1)'
+    ];
+    term1Heatmap.set('gradient', gradient);
+}
+
+function setTerm2Gradient() {
+    gradient = [
+        'rgba(0, 0, 0, 0)',
+        'rgba(224, 255, 0, 1)',
+        'rgba(200, 227, 0, 1)',
+        'rgba(179, 204, 0, 1)',
+        'rgba(179, 237, 5, 1)'
+    ];
+    term2Heatmap.set('gradient', gradient);
 }
 
 function wipeMap() {
-	liveTweets.clear();
+	term1LiveTweets.clear();
+	term2LiveTweets.clear();
 }

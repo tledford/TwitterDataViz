@@ -89,7 +89,7 @@ twitterStreamClient.on('tweet', function(tweet) {
     	}
     }
 
-    getLocation(tweet);
+    getLocation(tweet, hashtags);
 
     //console.log("Term1: " + counter1);
     //console.log("Term2: " + counter2);
@@ -106,15 +106,27 @@ io.on('connection', function(socket){
     });
 });
 
-function getLocation(tweet) {
+function getLocation(tweet, hashtags) {
     // Does the JSON result have coordinates
     if (tweet.coordinates){
         if (tweet.coordinates !== null){
-            console.log(tweet.entities.hashtags);
+            //console.log(tweet.entities.hashtags);
             //If so then build up some nice json and send out to web sockets
             var outputPoint = {"lat": tweet.coordinates.coordinates[0],"lng": tweet.coordinates.coordinates[1]};
-            io.emit('tweet-location', outputPoint);
-        }
+            
+            
+		    for (var i in hashtags) {
+		    	//console.log(hashtags[i].text);
+		    	var hashtag = hashtags[i].text;
+		    	hashtag = hashtag.toLowerCase();
+		    	if(hashtag == term1) {
+		    		io.emit('term1-location', outputPoint);
+		    	}
+		    	if(hashtag == term2) {
+		    		io.emit('term2-location', outputPoint);
+		    	}
+		    }
+		}
     }
     else if(tweet.place){
         if(tweet.place.bounding_box.type === 'Polygon'){
@@ -143,7 +155,17 @@ function getLocation(tweet) {
             // Build json object and broadcast it
             var outputPoint = {"lat": centerLat,"lng": centerLng};
             console.log(outputPoint);
-            io.emit('tweet-location', outputPoint);
+            for (var i in hashtags) {
+		    	//console.log(hashtags[i].text);
+		    	var hashtag = hashtags[i].text;
+		    	hashtag = hashtag.toLowerCase();
+		    	if(hashtag == term1) {
+		    		io.emit('term1-location', outputPoint);
+		    	}
+		    	if(hashtag == term2) {
+		    		io.emit('term2-location', outputPoint);
+		    	}
+		    }
         }
     }
     

@@ -33,4 +33,6 @@
 #pizzaPie {
 	width:400px;
 	height:400px;
+	margin-right: auto;
+	margin-left: auto;
 }
