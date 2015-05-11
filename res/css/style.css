@@ -1,3 +1,7 @@
+body {
+	font-family: 'Helvetica Neue';
+}
+
 #leftContainer {
 	height: 100%;
 	width: 50%;
@@ -35,4 +39,9 @@
 	height:400px;
 	margin-right: auto;
 	margin-left: auto;
+}
+
+#tweetText {
+	height: 80px;
+	overflow: auto;
 }

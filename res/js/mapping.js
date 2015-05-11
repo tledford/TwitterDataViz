@@ -19,9 +19,15 @@ socket.on('term1', function(msg){
 	$('#term1total').html(msg);
 	$("#term1pie").attr("data-val", msg);
 });
+
 socket.on('term2', function(msg){
 	$('#term2total').html(msg);
 	$("#term2pie").attr("data-val", msg);
+});
+
+socket.on('text', function(text){
+	$('#tweetText').prepend("<br /><br />");
+	$('#tweetText').prepend("&rarr;  " + text);
 });
 
 
